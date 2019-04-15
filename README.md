@@ -180,7 +180,7 @@ combineData(el1, el2, els){
         els[index].setAttribute('data-combine', str);
     };
 }
-``
+```
 拼圖z-index
 ---
 ```JS
