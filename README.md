@@ -129,7 +129,7 @@ getSiblsPos(e){
 ```
 拼圖結合
 ---
-拼接
+拼接:
 ```JS
 combinePuzzle(el1, el2, els, topIncr, leftIncr, idxArr1, idxArr2) {
     let top1 = parseInt(el1.style.top);
@@ -162,7 +162,7 @@ combinePuzzle(el1, el2, els, topIncr, leftIncr, idxArr1, idxArr2) {
         }, 500);
     });
 }
-
+```
 data合併:
 ```JS
 combineData(el1, el2, els){
