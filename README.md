@@ -162,6 +162,7 @@ combinePuzzle(el1, el2, els, topIncr, leftIncr, idxArr1, idxArr2) {
         }, 500);
     });
 }
+
 data合併:
 ```JS
 combineData(el1, el2, els){
