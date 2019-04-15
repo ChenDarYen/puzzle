@@ -2,8 +2,8 @@ Vue Puzzle
 ===
 資料定義
 ---
-```JS
 拼圖資料；
+```JS
 puzzleData: {
   'name': '作品標題',
   'xNum': 拼圖x軸個數,
@@ -129,7 +129,7 @@ getSiblsPos(e){
 ```
 拼圖結合
 ---
-拼接:
+拼接：
 ```JS
 combinePuzzle(el1, el2, els, topIncr, leftIncr, idxArr1, idxArr2) {
     let top1 = parseInt(el1.style.top);
@@ -163,7 +163,7 @@ combinePuzzle(el1, el2, els, topIncr, leftIncr, idxArr1, idxArr2) {
     });
 }
 ```
-data合併:
+data合併：
 ```JS
 combineData(el1, el2, els){
     let str = `${el1.getAttribute('data-combine')}, ${el2.getAttribute('data-combine')}`;       //合併拼接雙方的已拼接索引
