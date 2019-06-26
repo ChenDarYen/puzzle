@@ -17,6 +17,7 @@ module.exports = {
     ],
     "extends": ["airbnb-base", "plugin:vue/recommended"],
     "rules": {
+      "no-restricted-syntax": 1,
       "no-shadow": 1,
       "no-plusplus": [2, { "allowForLoopAfterthoughts": true }],
       "semi": [2, "never"],

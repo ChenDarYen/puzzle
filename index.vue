@@ -63,11 +63,10 @@ export default {
         const puzzleH = el.offsetHeight
         const puzzleW = el.offsetWidth
         const filtedLeng = filtedArr.length
-        for (let i = 0; i < filtedLeng; i++) {
-          const index = filtedArr[i]
+        for (const puzzleIdx of filtedArr) {
           dist.push({
-            x: e.clientX - puzzles[index].offsetLeft,
-            y: e.clientY - puzzles[index].offsetTop,
+            x: e.clientX - puzzles[puzzleIdx].offsetLeft,
+            y: e.clientY - puzzles[puzzleIdx].offsetTop,
           })
         }
         document.onmousemove = (e) => {
@@ -81,10 +80,9 @@ export default {
             }
           }
           if (inRange) {
-            for (let i = 0; i < filtedLeng; i++) {
-              const index = filtedArr[i]
-              puzzles[index].style.left = `${e.clientX - dist[i].x}px`
-              puzzles[index].style.top = `${e.clientY - dist[i].y}px`
+            for (const [i, puzzleIdx] of filtedArr.entries()) {
+              puzzles[puzzleIdx].style.left = `${e.clientX - dist[i].x}px`
+              puzzles[puzzleIdx].style.top = `${e.clientY - dist[i].y}px`
             }
           }
         }
@@ -181,16 +179,17 @@ export default {
       }
     },
     setData () {
-      document.querySelectorAll('.puzzle').forEach((el, index) => {
-        el.setAttribute('data-combine', index)
-      })
+      const puzzles = document.querySelectorAll('.puzzle')
+      for (const [index, puzzle] of Object.entries(puzzles)) {
+        puzzle.setAttribute('data-combine', index)
+      }
     },
     changeZIdx (e) {
       const puzzles = document.querySelectorAll('.puzzle')
       const combinePuzzles = JSON.parse(`[${puzzles[[...puzzles].indexOf(e.currentTarget)].getAttribute('data-combine')}]`)
-      combinePuzzles.forEach((el) => {
-        puzzles[el].style.zIndex = this.zIndex
-      })
+      for (const puzzleIdx of combinePuzzles) {
+        puzzles[puzzleIdx].style.zIndex = this.zIndex
+      }
       this.zIndex += 1
     },
     combine (idx1, idx2, els, topIncr, leftIncr) {
@@ -199,16 +198,16 @@ export default {
       const { siblsIdxArr } = this
       const combineArr1 = JSON.parse(`[${el1.getAttribute('data-combine')}]`)
       const combineArr2 = JSON.parse(`[${el2.getAttribute('data-combine')}]`)
-      combineArr1.forEach((i) => {
-        combineArr2.forEach((j) => {
-          if (siblsIdxArr[i].indexOf(j) >= 0) {
-            siblsIdxArr[i].splice(siblsIdxArr[i].indexOf(j), 1)
+      for (const puzzleI of combineArr1) {
+        for (const puzzleJ of combineArr2) {
+          if (siblsIdxArr[puzzleI].indexOf(puzzleJ) >= 0) {
+            siblsIdxArr[puzzleI].splice(siblsIdxArr[puzzleI].indexOf(puzzleJ), 1)
           }
-          if (siblsIdxArr[j].indexOf(i) >= 0) {
-            siblsIdxArr[j].splice(siblsIdxArr[j].indexOf(i), 1)
+          if (siblsIdxArr[puzzleJ].indexOf(puzzleI) >= 0) {
+            siblsIdxArr[puzzleJ].splice(siblsIdxArr[puzzleJ].indexOf(puzzleI), 1)
           }
-        })
-      })
+        }
+      }
       this.combinePuzzle(el1, el2, els, topIncr, leftIncr, combineArr1, combineArr2)
       this.combineData(el1, el2, els)
     },
@@ -218,44 +217,38 @@ export default {
       const top2 = parseInt(el2.style.top, 10)
       const left2 = parseInt(el2.style.left, 10)
       const posDiff = []
-      const { length } = idxArr2
-      idxArr2.forEach((el) => {
+      for (const elIdx of idxArr2) {
         posDiff.push({
-          top: parseInt(els[el].style.top, 10) - top2,
-          left: parseInt(els[el].style.left, 10) - left2,
+          top: parseInt(els[elIdx].style.top, 10) - top2,
+          left: parseInt(els[elIdx].style.left, 10) - left2,
         })
-      })
-      for (let i = 0; i < length; i++) {
-        const index = idxArr2[i]
-        els[index].style.top = `${top1 + topIncr + posDiff[i].top}px`
-        els[index].style.left = `${left1 + leftIncr + posDiff[i].left}px`
       }
-      idxArr1.forEach((el) => {
-        els[el].classList.add('box-shadow')
+      for (const [i, elIdx] of idxArr2.entries()) {
+        els[elIdx].style.top = `${top1 + topIncr + posDiff[i].top}px`
+        els[elIdx].style.left = `${left1 + leftIncr + posDiff[i].left}px`
+      }
+      for (const elIdx of idxArr1) {
+        els[elIdx].classList.add('box-shadow')
         setTimeout(() => {
-          els[el].classList.remove('box-shadow')
+          els[elIdx].classList.remove('box-shadow')
         }, 500)
-      })
-      idxArr2.forEach((el) => {
-        els[el].classList.add('box-shadow')
+      }
+      for (const elIdx of idxArr2) {
+        els[elIdx].classList.add('box-shadow')
         setTimeout(() => {
-          els[el].classList.remove('box-shadow')
+          els[elIdx].classList.remove('box-shadow')
         }, 500)
-      })
+      }
     },
     combineData (el1, el2, els) {
       const str = `${el1.getAttribute('data-combine')}, ${el2.getAttribute('data-combine')}`
       const idxArr1 = JSON.parse(`[${el1.getAttribute('data-combine')}]`)
       const idxArr2 = JSON.parse(`[${el2.getAttribute('data-combine')}]`)
-      const length1 = idxArr1.length
-      const length2 = idxArr2.length
-      for (let i = 0; i < length1; i++) {
-        const index = idxArr1[i]
-        els[index].setAttribute('data-combine', str)
+      for (const elIdx of idxArr1) {
+        els[elIdx].setAttribute('data-combine', str)
       }
-      for (let i = 0; i < length2; i++) {
-        const index = idxArr2[i]
-        els[index].setAttribute('data-combine', str)
+      for (const elIdx of idxArr2) {
+        els[elIdx].setAttribute('data-combine', str)
       }
     },
     complete () {
@@ -290,39 +283,39 @@ export default {
       const puzzles = document.querySelectorAll('.puzzle')
       const combinePuzzles = JSON.parse(`[${e.currentTarget.getAttribute('data-combine')}]`)
       const { xNum } = this.puzzleData
-      combinePuzzles.forEach((el) => {
-        const top = puzzles[el].offsetTop
-        const left = puzzles[el].offsetLeft
-        this.siblsIdxArr[el].forEach((element) => {
-          switch (element - el) {
+      for (const puzzleI of combinePuzzles) {
+        const top = puzzles[puzzleI].offsetTop
+        const left = puzzles[puzzleI].offsetLeft
+        for (const puzzleJ of this.siblsIdxArr[puzzleI]) {
+          switch (puzzleJ - puzzleI) {
             case xNum:
-              if (Math.abs(puzzles[element].offsetTop - top - 144) < 8
-                && Math.abs(puzzles[element].offsetLeft - left) < 8) {
-                this.combine(element, el, puzzles, -144, 0)
+              if (Math.abs(puzzles[puzzleJ].offsetTop - top - 144) < 8
+                && Math.abs(puzzles[puzzleJ].offsetLeft - left) < 8) {
+                this.combine(puzzleJ, puzzleI, puzzles, -144, 0)
               }
               break
             case 1:
-              if (Math.abs(puzzles[element].offsetTop - top) < 8
-                && Math.abs(puzzles[element].offsetLeft - left - 144) < 8) {
-                this.combine(element, el, puzzles, 0, -144)
+              if (Math.abs(puzzles[puzzleJ].offsetTop - top) < 8
+                && Math.abs(puzzles[puzzleJ].offsetLeft - left - 144) < 8) {
+                this.combine(puzzleJ, puzzleI, puzzles, 0, -144)
               }
               break
             case -1:
-              if (Math.abs(puzzles[element].offsetTop - top) < 8
-                && Math.abs(puzzles[element].offsetLeft - left + 144) < 8) {
-                this.combine(element, el, puzzles, -0, 144)
+              if (Math.abs(puzzles[puzzleJ].offsetTop - top) < 8
+                && Math.abs(puzzles[puzzleJ].offsetLeft - left + 144) < 8) {
+                this.combine(puzzleJ, puzzleI, puzzles, -0, 144)
               }
               break
             case -xNum:
-              if (Math.abs(puzzles[element].offsetTop - top + 144) < 8
-                && Math.abs(puzzles[element].offsetLeft - left) < 8) {
-                this.combine(element, el, puzzles, 144, 0)
+              if (Math.abs(puzzles[puzzleJ].offsetTop - top + 144) < 8
+                && Math.abs(puzzles[puzzleJ].offsetLeft - left) < 8) {
+                this.combine(puzzleJ, puzzleI, puzzles, 144, 0)
               }
               break
             default:
           }
-        })
-      })
+        }
+      }
       const combinePuzzlesUpdate = JSON.parse(`[${e.currentTarget.getAttribute('data-combine')}]`)
       if (combinePuzzlesUpdate.length === 9) {
         this.complete()
